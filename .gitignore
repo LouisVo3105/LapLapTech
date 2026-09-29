@@ -1,0 +1,29 @@
+# Operating system and editor files
+.DS_Store
+**/.DS_Store
+.idea/
+.vscode/
+.obsidian/
+
+# Secrets and local environments
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+env/
+*.pem
+*.key
+service-account*.json
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# dbt generated files
+target/
+dbt_packages/
+logs/
+dbt_internal_packages/
+.user.yml

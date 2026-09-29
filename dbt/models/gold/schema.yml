@@ -1,0 +1,37 @@
+version: 2
+
+models:
+  - name: mart_daily_site_kpis
+    description: "Bảng tổng hợp các chỉ số KPI theo ngày của website"
+    columns:
+      - name: event_date
+        description: "Ngày xảy ra sự kiện"
+        tests:
+          - unique
+          - not_null
+      - name: total_events
+        tests:
+          - not_null
+
+  - name: mart_behavior_funnel_daily
+    description: "Bảng theo dõi phễu hành vi người dùng theo ngày"
+    columns:
+      - name: funnel_step
+        description: "Thứ tự các bước trong phễu"
+        tests:
+          - not_null
+          - accepted_values:
+              values: [1, 2, 3, 4, 5]
+              quote: false
+
+  - name: mart_device_traffic
+    description: "Lưu lượng truy cập chi tiết cho từng thiết bị"
+    columns:
+      - name: device_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_laptop_model')
+              field: id
+              config:
+                severity: warn
