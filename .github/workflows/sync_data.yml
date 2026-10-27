@@ -1,0 +1,45 @@
+name: Sync ClickHouse to BigQuery
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 17 * * *'
+
+jobs:
+  elt-sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_SERVICE_ACCOUNT_JSON }}'
+
+      - name: Run Sync Script
+        env:
+          CLICKHOUSE_HOST: ${{ secrets.CLICKHOUSE_HOST }}
+          CLICKHOUSE_USER: ${{ secrets.CLICKHOUSE_USER }}
+          CLICKHOUSE_PASSWORD: ${{ secrets.CLICKHOUSE_PASSWORD }}
+          CLICKHOUSE_PORT: ${{ vars.CLICKHOUSE_PORT }}
+          CLICKHOUSE_DATABASE: ${{ vars.CLICKHOUSE_DATABASE }}
+          CLICKHOUSE_SECURE: ${{ vars.CLICKHOUSE_SECURE }}
+          BIGQUERY_DBT_DATASET: ${{ vars.BIGQUERY_DBT_DATASET }}
+          BIGQUERY_LOCATION: ${{ vars.BIGQUERY_LOCATION }}
+          GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+          LAPLAPTECH_SOURCE_SCHEMA: ${{ vars.LAPLAPTECH_SOURCE_SCHEMA }}
+        run: |
+          python Ingestion/clickhouse_to_bigquery.py    
