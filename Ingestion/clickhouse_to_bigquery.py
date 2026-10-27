@@ -3,8 +3,8 @@ import os
 import json
 from typing import Iterable
 
-from dotenv import load_dotenv
-load_dotenv()
+# from dotenv import load_dotenv
+# load_dotenv()
 
 import clickhouse_connect
 from google.cloud import bigquery
